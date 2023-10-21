@@ -1,5 +1,11 @@
+import datetime
 import psycopg2
 import mimesis
+import random
+from mimesis import Person
+from mimesis.locales import Locale
+from mimesis.enums import Gender
+from mimesis.builtins import RussiaSpecProvider
 
 
 def main():
@@ -14,17 +20,28 @@ def main():
 
     # Query the database and obtain data as Python objects
 
-    cur.execute(
-        "CREATE TABLE Users (idUser serial PRIMARY KEY, Surname VARCHAR(15) NOT NULL, Name VARCHAR(15) NOT NULL, Patronymic VARCHAR(15), Birthday DATE NOT NULL, Profession VARCHAR(50) NOT NULL, Nationality VARCHAR(15) NOT NULL, PhoneNumber VARCHAR(11), Email VARCHAR(40), BookCount INTEGER);"
-    )
-    cur.execute(
-        "INSERT INTO Users (IdUset, Surname, Name, Patronymic, Profession, Nationality, PhoneNumber, Email, BookCount) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (1, "Durov", "Pavel", "Alexeevich", "Designer", "Russian",
-         "88005553535", "upchh@example.com", 2),
-    )
-    cur.execute("SELECT * FROM Users;")
+    for id in range(1, 1001):
+        gender = random.choice([Gender.MALE, Gender.FEMALE])
+        person = Person(Locale.RU)
+        ru = RussiaSpecProvider()
+        gl = mimesis.Generic('ru')
+        name, surname = person.full_name(gender=gender).split(" ")
+        patronymic = ru.patronymic(gender)
+        birthday = gl.datetime.date(start=1980, end=2010)
+        prof = person.occupation()
+        nation = person.nationality(gender)
+        phone_number = person.phone_number()
+        email = person.email()
+        book_count = random.randint(0, 100)
+        cur.execute(
+            "INSERT INTO Users (idUser, Surname, Name, Patronymic, Birthday, Profession, Nationality, PhoneNumber, Email, BookCount) VALUES (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s)",
+            (id, surname, name, patronymic, birthday, prof, nation,
+             phone_number, email, book_count))
 
-    # Make the changes to the database persistent
+    cur.execute("SELECT * FROM Users;")
+    print(cur.fetchall())
+
+    # Make the changes to the database persistenT
     conn.commit()
     cur.close()
     conn.close()

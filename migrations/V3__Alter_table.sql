@@ -1,0 +1,39 @@
+ALTER TABLE library
+    ALTER COLUMN Name SET NOT NULL,
+    ALTER COLUMN Description SET NOT NULL,
+    ALTER COLUMN createdat SET NOT NULL,
+    ALTER COLUMN booksamount SET NOT NULL;
+
+ALTER TABLE Worker
+    ALTER COLUMN Name SET NOT NULL,
+    ALTER COLUMN role SET NOT NULL,
+    ALTER COLUMN hiredat SET NOT NULL,
+    ALTER COLUMN DaysWorked SET NOT NULL;
+
+ALTER TABLE Role
+    ADD CONSTRAINT unique_role UNIQUE ( name );
+
+ALTER TABLE Task
+    ADD CONSTRAINT unique_task UNIQUE ( name ),
+    ALTER COLUMN Description SET NOT NULL,
+    ALTER COLUMN deadline SET NOT NULL,
+    ALTER COLUMN workspace SET NOT NULL;
+
+ALTER TABLE Author
+    ALTER COLUMN Name SET NOT NULL,
+    ADD CONSTRAINT unique_author_name UNIQUE ( name );
+
+ALTER TABLE Publisher
+    ALTER COLUMN Name SET NOT NULL,
+    ADD CONSTRAINT unique_publisher_name UNIQUE ( name ),
+    ALTER COLUMN createdat SET NOT NULL;
+
+ALTER TABLE Book
+    ALTER COLUMN Name SET NOT NULL,
+    ALTER COLUMN cost SET NOT NULL,
+    ADD CHECK (cost > 0);
+
+ALTER TABLE Reader
+    ALTER COLUMN Name SET NOT NULL,
+    ALTER COLUMN bookcount SET NOT NULL,
+    ADD CHECK (bookcount > -1);
