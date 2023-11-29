@@ -24,7 +24,7 @@ def main():
         gender = random.choice([Gender.MALE, Gender.FEMALE])
         person = Person(Locale.RU)
         ru = RussiaSpecProvider()
-        gl = mimesis.Generic('ru')
+        gl = mimesis.Generic(Locale.RU)
         name, surname = person.full_name(gender=gender).split(" ")
         patronymic = ru.patronymic(gender)
         birthday = gl.datetime.date(start=1980, end=2010)
